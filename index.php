@@ -44,20 +44,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avaliação de Atendimento</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        form { width: 50%; margin: auto; background: #f4f4f4; padding: 20px; border-radius: 10px; }
-        label { font-weight: bold; }
-        input, textarea, select { width: 100%; margin: 10px 0; padding: 8px; }
-        button { background: green; color: white; padding: 10px; border: none; cursor: pointer; }
-        button:hover { background: darkgreen; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ADFF2F;
+            color: black;
+        }
+        h2 {
+            font-weight: bold;
+        }
+        form {
+            width: 50%;
+            margin: auto;
+            background: black;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background: #32CD32;
+            color: black;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #228B22;
+        }
     </style>
 </head>
 <body>
-
     <h2>Avaliação de Atendimento</h2>
     <form action="index.php" method="POST">
         <label>Nome do Atendente:</label>
-        <input type="text" name="nome" required>
+        <select name="nome" required>
+            <option value="">Selecione o atendente</option>
+            <?php
+            // Buscar atendentes do banco de dados, evitando duplicatas
+            $sql = "SELECT DISTINCT nome FROM feedbacks ORDER BY nome ASC";
+            $result = $conexao->query($sql);
+
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<option value='" . htmlspecialchars($row['nome'], ENT_QUOTES) . "'>" . htmlspecialchars($row['nome'], ENT_QUOTES) . "</option>";
+                }
+            } else {
+                echo "<option value=''>Erro ao carregar atendentes</option>";
+            }
+            ?>
+        </select>
 
         <label>Avaliação:</label>
         <select name="estrelas" required>
@@ -73,6 +123,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Enviar Avaliação</button>
     </form>
-
 </body>
 </html>
